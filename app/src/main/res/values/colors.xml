@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- App colors -->
+    <color name="primary">#1976D2</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="primary_light">#42A5F5</color>
+    <color name="accent">#FF5722</color>
+
+    <color name="background">#F5F5F5</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+
+    <!-- Group icon backgrounds -->
+    <color name="otp_color">#E91E63</color>
+    <color name="transaction_color">#4CAF50</color>
+    <color name="card_color">#2196F3</color>
+    <color name="promo_color">#FF9800</color>
+    <color name="folder_color">#9C27B0</color>
+    <color name="avatar_color">#1976D2</color>
+</resources>
