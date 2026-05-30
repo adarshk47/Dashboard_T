@@ -18,23 +18,19 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: gradle
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.2'
+      - name: Install Gradle 8.2
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.2-bin.zip -O /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /opt/gradle
+          echo "/opt/gradle/gradle-8.2/bin" >> $GITHUB_PATH
 
-      - name: Create local.properties
+      - name: Write local.properties
         run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
 
-      - name: Generate Gradle wrapper
-        run: gradle wrapper --gradle-version=8.2
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: gradle assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
