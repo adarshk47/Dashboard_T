@@ -1,8 +1,5 @@
 package com.messageorganizer.data
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
 data class MessageGroup(
     val id: String,
     val name: String,
