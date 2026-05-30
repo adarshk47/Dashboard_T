@@ -26,8 +26,19 @@ jobs:
           unzip -q /tmp/gradle.zip -d /opt/gradle
           echo "/opt/gradle/gradle-8.2/bin" >> $GITHUB_PATH
 
-      - name: Write local.properties
-        run: echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+      - name: Setup Android SDK
+        run: |
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          echo "Detected SDK at: $SDK_ROOT"
+          echo "sdk.dir=$SDK_ROOT" > local.properties
+          cat local.properties
+          # Accept all licenses
+          yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses 2>/dev/null || true
+          # Install required SDK packages
+          "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-34" \
+            "build-tools;34.0.0" \
+            "platform-tools" 2>/dev/null || true
 
       - name: Build Debug APK
         run: gradle assembleDebug --stacktrace
