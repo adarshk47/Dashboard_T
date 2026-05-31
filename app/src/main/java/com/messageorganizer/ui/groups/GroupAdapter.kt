@@ -15,11 +15,19 @@ class GroupAdapter(
     private val onGroupLongClick: ((MessageGroup) -> Unit)?
 ) : ListAdapter<MessageGroup, GroupAdapter.ViewHolder>(DiffCallback()) {
 
+    private var bookmarkedIds: Set<String> = emptySet()
+
+    fun setBookmarks(ids: Set<String>) {
+        bookmarkedIds = ids
+        notifyItemRangeChanged(0, itemCount)
+    }
+
     inner class ViewHolder(private val binding: ItemGroupBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(group: MessageGroup) {
-            binding.tvGroupName.text = group.name
+            val pinned = bookmarkedIds.contains(group.id)
+            binding.tvGroupName.text = if (pinned) "⭐ ${group.name}" else group.name
             binding.tvMessageCount.text = "${group.messageCount} messages"
             binding.ivGroupIcon.setImageResource(
                 when (group.icon) {
@@ -32,26 +40,20 @@ class GroupAdapter(
                 }
             )
             binding.root.setOnClickListener { onGroupClick(group) }
-            if (onGroupLongClick != null) {
-                binding.root.setOnLongClickListener {
-                    onGroupLongClick.invoke(group)
-                    true
-                }
+            binding.root.setOnLongClickListener {
+                onGroupLongClick?.invoke(group)
+                true
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemGroupBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(ItemGroupBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
     class DiffCallback : DiffUtil.ItemCallback<MessageGroup>() {
-        override fun areItemsTheSame(oldItem: MessageGroup, newItem: MessageGroup) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: MessageGroup, newItem: MessageGroup) = oldItem == newItem
+        override fun areItemsTheSame(a: MessageGroup, b: MessageGroup) = a.id == b.id
+        override fun areContentsTheSame(a: MessageGroup, b: MessageGroup) = a == b
     }
 }

@@ -21,29 +21,46 @@ class GroupPreference(context: Context) {
         val existing = getCustomGroups().toMutableList()
         existing.removeAll { it.id == groupId }
         saveAll(existing)
+        // also remove from bookmarks
+        val bookmarks = getBookmarkedIds().toMutableSet()
+        bookmarks.remove(groupId)
+        prefs.edit().putStringSet("bookmarks", bookmarks).apply()
+    }
+
+    fun renameGroup(groupId: String, newName: String) {
+        val existing = getCustomGroups().toMutableList()
+        val idx = existing.indexOfFirst { it.id == groupId }
+        if (idx >= 0) {
+            existing[idx] = existing[idx].copy(name = newName)
+            saveAll(existing)
+        }
     }
 
     fun getCustomGroups(): List<MessageGroup> {
         val json = prefs.getString("groups", "[]") ?: "[]"
         val array = JSONArray(json)
-        val groups = mutableListOf<MessageGroup>()
-        for (i in 0 until array.length()) {
+        return (0 until array.length()).map { i ->
             val obj = array.getJSONObject(i)
-            val keywordsArray = obj.optJSONArray("keywords") ?: JSONArray()
-            val keywords = (0 until keywordsArray.length()).map { keywordsArray.getString(it) }
-            groups.add(
-                MessageGroup(
-                    id = obj.getString("id"),
-                    name = obj.getString("name"),
-                    icon = GroupIcon.valueOf(obj.optString("icon", "FOLDER")),
-                    groupType = GroupType.CUSTOM,
-                    keywords = keywords,
-                    senderPattern = obj.optString("senderPattern").takeIf { it.isNotBlank() },
-                    isCustom = true
-                )
+            val kwArray = obj.optJSONArray("keywords") ?: JSONArray()
+            MessageGroup(
+                id = obj.getString("id"),
+                name = obj.getString("name"),
+                icon = GroupIcon.valueOf(obj.optString("icon", "FOLDER")),
+                groupType = GroupType.CUSTOM,
+                keywords = (0 until kwArray.length()).map { kwArray.getString(it) },
+                senderPattern = obj.optString("senderPattern").takeIf { it.isNotBlank() },
+                isCustom = true
             )
         }
-        return groups
+    }
+
+    fun getBookmarkedIds(): Set<String> =
+        prefs.getStringSet("bookmarks", emptySet()) ?: emptySet()
+
+    fun toggleBookmark(groupId: String) {
+        val bookmarks = getBookmarkedIds().toMutableSet()
+        if (bookmarks.contains(groupId)) bookmarks.remove(groupId) else bookmarks.add(groupId)
+        prefs.edit().putStringSet("bookmarks", bookmarks).apply()
     }
 
     private fun saveAll(groups: List<MessageGroup>) {
@@ -53,9 +70,9 @@ class GroupPreference(context: Context) {
             obj.put("id", group.id)
             obj.put("name", group.name)
             obj.put("icon", group.icon.name)
-            val keywordsArray = JSONArray()
-            group.keywords.forEach { keywordsArray.put(it) }
-            obj.put("keywords", keywordsArray)
+            val kwArray = JSONArray()
+            group.keywords.forEach { kwArray.put(it) }
+            obj.put("keywords", kwArray)
             obj.put("senderPattern", group.senderPattern ?: "")
             array.put(obj)
         }
