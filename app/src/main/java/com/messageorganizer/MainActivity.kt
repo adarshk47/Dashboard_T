@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.messageorganizer.databinding.ActivityMainBinding
 import com.messageorganizer.ui.MainPagerAdapter
+import com.messageorganizer.util.AdManager
 import com.messageorganizer.viewmodel.SmsViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +36,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this)[SmsViewModel::class.java]
+
+        AdManager.init(this)
+        AdManager.loadInterstitial(this)
 
         setSupportActionBar(binding.toolbar)
 

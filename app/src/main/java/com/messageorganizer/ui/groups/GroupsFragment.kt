@@ -11,6 +11,7 @@ import com.messageorganizer.MainActivity
 import com.messageorganizer.databinding.FragmentGroupsBinding
 import com.messageorganizer.ui.messages.MessageListActivity
 import com.messageorganizer.ui.summary.TransactionSummaryActivity
+import com.messageorganizer.util.AdManager
 import com.messageorganizer.util.ExportManager
 
 class GroupsFragment : Fragment() {
@@ -54,6 +55,9 @@ class GroupsFragment : Fragment() {
         binding.rvBuiltIn.adapter = builtInAdapter
         binding.rvCustom.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCustom.adapter = customAdapter
+
+        // Load banner ad
+        AdManager.loadBanner(binding.adView)
 
         binding.fabAddGroup.setOnClickListener {
             startActivity(Intent(requireContext(), CreateGroupActivity::class.java))

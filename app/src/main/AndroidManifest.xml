@@ -13,6 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MessageOrganizer">
 
+        <!-- AdMob App ID -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4083049312549641~5447285879" />
+
         <activity android:name=".MainActivity" android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

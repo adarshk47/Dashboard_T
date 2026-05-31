@@ -108,6 +108,17 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- Banner Ad at bottom -->
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="70dp"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-4083049312549641/5537795532" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddGroup"
         android:layout_width="wrap_content"
