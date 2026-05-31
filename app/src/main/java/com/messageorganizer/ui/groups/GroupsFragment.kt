@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.messageorganizer.MainActivity
 import com.messageorganizer.databinding.FragmentGroupsBinding
 import com.messageorganizer.ui.messages.MessageListActivity
+import com.messageorganizer.ui.summary.TransactionSummaryActivity
+import com.messageorganizer.util.ExportManager
 
 class GroupsFragment : Fragment() {
 
@@ -26,39 +28,47 @@ class GroupsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val viewModel = (requireActivity() as MainActivity).viewModel
 
         builtInAdapter = GroupAdapter(
             onGroupClick = { group ->
-                val intent = Intent(requireContext(), MessageListActivity::class.java)
-                intent.putExtra(MessageListActivity.EXTRA_GROUP_ID, group.id)
-                intent.putExtra(MessageListActivity.EXTRA_GROUP_NAME, group.name)
-                startActivity(intent)
+                startActivity(Intent(requireContext(), MessageListActivity::class.java).apply {
+                    putExtra(MessageListActivity.EXTRA_GROUP_ID, group.id)
+                    putExtra(MessageListActivity.EXTRA_GROUP_NAME, group.name)
+                })
             },
             onGroupLongClick = null
         )
 
         customAdapter = GroupAdapter(
             onGroupClick = { group ->
-                val intent = Intent(requireContext(), MessageListActivity::class.java)
-                intent.putExtra(MessageListActivity.EXTRA_GROUP_ID, group.id)
-                intent.putExtra(MessageListActivity.EXTRA_GROUP_NAME, group.name)
-                startActivity(intent)
+                startActivity(Intent(requireContext(), MessageListActivity::class.java).apply {
+                    putExtra(MessageListActivity.EXTRA_GROUP_ID, group.id)
+                    putExtra(MessageListActivity.EXTRA_GROUP_NAME, group.name)
+                })
             },
-            onGroupLongClick = { group ->
-                viewModel.deleteCustomGroup(group.id)
-            }
+            onGroupLongClick = { group -> viewModel.deleteCustomGroup(group.id) }
         )
 
         binding.rvBuiltIn.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBuiltIn.adapter = builtInAdapter
-
         binding.rvCustom.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCustom.adapter = customAdapter
 
         binding.fabAddGroup.setOnClickListener {
             startActivity(Intent(requireContext(), CreateGroupActivity::class.java))
+        }
+
+        binding.btnSummary.setOnClickListener {
+            startActivity(Intent(requireContext(), TransactionSummaryActivity::class.java))
+        }
+
+        binding.btnBackup.setOnClickListener {
+            val messages = viewModel.allMessages.value ?: emptyList()
+            if (messages.isNotEmpty()) {
+                val intent = ExportManager.backupAllToDrive(requireContext(), messages)
+                startActivity(Intent.createChooser(intent, "Save backup to..."))
+            }
         }
 
         viewModel.builtInGroups.observe(viewLifecycleOwner) { groups ->
@@ -79,8 +89,7 @@ class GroupsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val viewModel = (requireActivity() as MainActivity).viewModel
-        viewModel.loadMessages()
+        (requireActivity() as MainActivity).viewModel.loadMessages()
     }
 
     override fun onDestroyView() {

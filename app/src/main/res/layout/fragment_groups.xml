@@ -16,6 +16,36 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Quick action buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="4dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSummary"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:text="Transaction Summary"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBackup"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:text="Backup to Drive"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
@@ -34,8 +64,8 @@
                 android:textAllCaps="true"
                 android:letterSpacing="0.1"
                 android:paddingHorizontal="8dp"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="6dp"
                 android:fontFamily="sans-serif-medium" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -54,8 +84,8 @@
                 android:textAllCaps="true"
                 android:letterSpacing="0.1"
                 android:paddingHorizontal="8dp"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="6dp"
                 android:fontFamily="sans-serif-medium"
                 android:visibility="gone" />
 
@@ -69,15 +99,13 @@
                 android:id="@+id/tvNoCustom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tap + to create a custom group\n(e.g. by keyword or sender)"
+                android:text="Tap + to create a custom group"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary"
                 android:gravity="center"
-                android:padding="24dp"
-                android:visibility="visible" />
+                android:padding="16dp" />
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

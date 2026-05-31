@@ -3,6 +3,7 @@
 
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,9 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MessageOrganizer">
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
+        <activity android:name=".MainActivity" android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,16 +21,40 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.messages.MessageListActivity"
+        <activity android:name=".ui.messages.MessageListActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
 
-        <activity
-            android:name=".ui.groups.CreateGroupActivity"
+        <activity android:name=".ui.groups.CreateGroupActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
+
+        <activity android:name=".ui.summary.TransactionSummaryActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- Widget -->
+        <receiver android:name=".ui.widget.MessageWidget"
+            android:exported="true"
+            android:label="Message Organizer Widget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+        <!-- FileProvider for CSV export -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
 
     </application>
-
 </manifest>

@@ -11,31 +11,32 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class MessageAdapter : ListAdapter<SmsMessage, MessageAdapter.ViewHolder>(DiffCallback()) {
+class MessageAdapter(
+    private val onLongClick: ((SmsMessage) -> Unit)? = null
+) : ListAdapter<SmsMessage, MessageAdapter.ViewHolder>(DiffCallback()) {
 
     private val dateFormat = SimpleDateFormat("dd MMM, hh:mm a", Locale.getDefault())
 
     inner class ViewHolder(private val binding: ItemMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(message: SmsMessage) {
             binding.tvSender.text = message.sender
             binding.tvBody.text = message.body
             binding.tvTime.text = dateFormat.format(Date(message.timestamp))
+            binding.root.setOnLongClickListener {
+                onLongClick?.invoke(message)
+                true
+            }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(ItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
     class DiffCallback : DiffUtil.ItemCallback<SmsMessage>() {
-        override fun areItemsTheSame(oldItem: SmsMessage, newItem: SmsMessage) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: SmsMessage, newItem: SmsMessage) = oldItem == newItem
+        override fun areItemsTheSame(a: SmsMessage, b: SmsMessage) = a.id == b.id
+        override fun areContentsTheSame(a: SmsMessage, b: SmsMessage) = a == b
     }
 }

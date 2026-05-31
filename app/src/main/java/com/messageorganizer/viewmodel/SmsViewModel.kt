@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 
 class SmsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = SmsRepository(application)
+    val repository = SmsRepository(application)
 
     private val _allMessages = MutableLiveData<List<SmsMessage>>()
     val allMessages: LiveData<List<SmsMessage>> = _allMessages
@@ -59,9 +59,7 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.saveCustomGroup(group)
             val messages = _allMessages.value ?: emptyList()
-            withContext(Dispatchers.Main) {
-                _customGroups.value = repository.getCustomGroups(messages)
-            }
+            withContext(Dispatchers.Main) { _customGroups.value = repository.getCustomGroups(messages) }
         }
     }
 
@@ -69,13 +67,24 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteCustomGroup(groupId)
             val messages = _allMessages.value ?: emptyList()
-            withContext(Dispatchers.Main) {
-                _customGroups.value = repository.getCustomGroups(messages)
-            }
+            withContext(Dispatchers.Main) { _customGroups.value = repository.getCustomGroups(messages) }
         }
     }
 
-    fun createCustomGroup(name: String, keywords: List<String>, senderPattern: String?): MessageGroup {
-        return repository.createCustomGroup(name, keywords, senderPattern)
+    fun createCustomGroup(name: String, keywords: List<String>, senderPattern: String?): MessageGroup =
+        repository.createCustomGroup(name, keywords, senderPattern)
+
+    fun blockSender(sender: String) {
+        repository.blockedSenderManager.blockSender(sender)
+        loadMessages()
     }
+
+    fun unblockSender(sender: String) {
+        repository.blockedSenderManager.unblockSender(sender)
+        loadMessages()
+    }
+
+    fun getBlockedSenders(): Set<String> = repository.blockedSenderManager.getBlockedSenders()
+
+    fun getCardNumber(body: String): String? = repository.extractCardNumber(body)
 }
