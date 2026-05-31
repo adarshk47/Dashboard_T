@@ -16,6 +16,7 @@
         android:orientation="vertical"
         android:padding="14dp">
 
+        <!-- Month header row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
                 android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
+        <!-- Spent / Received / Count -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -68,5 +70,35 @@
                 android:textSize="12sp"
                 android:textColor="@color/text_secondary" />
         </LinearLayout>
+
+        <!-- Toggle expand button -->
+        <TextView
+            android:id="@+id/tvToggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:textColor="?attr/colorPrimary"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center" />
+
+        <!-- Divider shown when expanded -->
+        <View
+            android:id="@+id/dividerExpand"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/text_secondary"
+            android:alpha="0.15"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <!-- Transaction detail rows (populated dynamically) -->
+        <LinearLayout
+            android:id="@+id/llDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

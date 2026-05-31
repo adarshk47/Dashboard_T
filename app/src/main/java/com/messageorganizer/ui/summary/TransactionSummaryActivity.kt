@@ -96,10 +96,12 @@ class TransactionSummaryActivity : AppCompatActivity() {
 
         // Group by month
         val byMonth = filtered.groupBy { monthFmt.format(it.date) }
+        val existing = adapter.currentList.associateBy { it.month }
         val items = byMonth.entries.sortedByDescending { it.key }.map { (month, list) ->
             val spent = list.filter { it.type == TransactionType.DEBIT }.sumOf { it.amount }
             val received = list.filter { it.type == TransactionType.CREDIT }.sumOf { it.amount }
-            SummaryAdapter.SummaryItem(month, spent, received, list.size)
+            SummaryAdapter.SummaryItem(month, spent, received, list.size, list,
+                expanded = existing[month]?.expanded ?: false)
         }
         adapter.submitList(items)
         binding.tvEmpty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
